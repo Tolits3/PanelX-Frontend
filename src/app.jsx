@@ -27,7 +27,6 @@ import PanelEditor from "./components/PanelEditor";
 import TermsOfService from "./pages/Auth/TermsOfService";
 import PrivacyPolicy from "./pages/Auth/PrivacyPolicy";
 
-// Credits
 import CreditsPage from "./pages/Credits/CreditsPage";
 
 // ─────────────────────────────────────────
