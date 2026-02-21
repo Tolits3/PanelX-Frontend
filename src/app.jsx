@@ -27,7 +27,6 @@ import PanelEditor from "./components/PanelEditor";
 import TermsOfService from "./pages/Auth/TermsOfService";
 import PrivacyPolicy from "./pages/Auth/PrivacyPolicy";
 
-import CreditsPage from "./pages/Credits/CreditsPage";
 
 // ─────────────────────────────────────────
 // Protected Route — redirects to /login if not logged in
@@ -112,15 +111,6 @@ function App() {
           element={
             <ProtectedRoute>
               <CharacterCreator />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/credits"
-          element={
-            <ProtectedRoute>
-              <CreditsPage />
             </ProtectedRoute>
           }
         />
