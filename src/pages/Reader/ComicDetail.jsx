@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import API_URL from "../../../config"; // adjust path based on file location
 
 export default function ComicDetail() {
   const { comicId } = useParams();
@@ -21,7 +22,7 @@ export default function ComicDetail() {
     setLoading(true);
     try {
       // Fetch series + episodes
-      const res = await fetch(`http://localhost:8000/api/series/${comicId}`);
+      const res = await fetch(`${API_URL}/api/series/${comicId}`);
       const data = await res.json();
 
       if (data.success) {
@@ -37,7 +38,7 @@ export default function ComicDetail() {
       if (user) {
         try {
           const progRes = await fetch(
-            `http://localhost:8000/api/reading-progress/user/${user.uid}/comic/${comicId}`
+            `${API_URL}/api/reading-progress/user/${user.uid}/comic/${comicId}`
           );
           const progData = await progRes.json();
           if (progData.success) {

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import UserProfileDropdown from "./UserProfileDropdown";
+import API_URL from "../../../config"; // adjust path based on file location
 
 export default function ReaderHomePage() {
   const { user, userProfile } = useAuth();
@@ -23,8 +24,8 @@ export default function ReaderHomePage() {
   const fetchAll = async () => {
     try {
       const [newRes, trendRes] = await Promise.all([
-        fetch("http://localhost:8000/api/series/all"),
-        fetch("http://localhost:8000/api/series/trending"),
+        fetch(`${API_URL}/api/series/all`),
+        fetch(`${API_URL}/api/series/trending`),
       ]);
       const newData = await newRes.json();
       const trendData = await trendRes.json();

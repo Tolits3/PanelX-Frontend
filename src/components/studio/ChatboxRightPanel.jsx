@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import API_URL from "../../../config";
 
 export default function ChatboxRightPanel({ isOpen, onToggle }) {
   const [messages, setMessages] = useState([
@@ -28,7 +29,7 @@ export default function ChatboxRightPanel({ isOpen, onToggle }) {
 
   const checkBackendConnection = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/chat/health");
+      const response = await fetch(`${API_URL}/api/chat/health`);
       if (response.ok) {
         setBackendStatus("connected");
       } else {

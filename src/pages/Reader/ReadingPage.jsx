@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import API_URL from "../../../config"; // adjust path based on file location
 
 export default function ReadingPage() {
   const { comicId, chapterId } = useParams();
@@ -34,7 +35,7 @@ export default function ReadingPage() {
     setPanels([]);
 
     try {
-      const res  = await fetch(`http://localhost:8000/api/series/episode/${chapterId}`);
+      const res  = await fetch(`${API_URL}/api/series/episode/${chapterId}`);
       const data = await res.json();
 
       if (!data.success) {
@@ -57,7 +58,7 @@ export default function ReadingPage() {
       }
 
       // ── Fetch series for title + next episode ──
-      const serRes  = await fetch(`http://localhost:8000/api/series/${comicId}`);
+      const serRes  = await fetch(`${API_URL}/api/series/${comicId}`);
       const serData = await serRes.json();
       if (serData.success) {
         setSeries(serData.series);
@@ -83,7 +84,7 @@ export default function ReadingPage() {
   const saveProgress = useCallback(async (panelIndex, completed = false) => {
     if (!user) return;
     try {
-      await fetch("http://localhost:8000/api/reading-progress/update", {
+      await fetch(`${API_URL}/api/reading-progress/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

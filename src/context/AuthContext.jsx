@@ -7,6 +7,9 @@ import {
   onAuthStateChanged
 } from "firebase/auth";
 import { auth } from "../firebase/firebase";
+import API_URL from "../../config"; // adjust path based on file location
+
+fetch(`${API_URL}/api/series/all`)
 
 const AuthContext = createContext();
 
@@ -22,7 +25,7 @@ export function AuthProvider({ children }) {
   // Fetch user profile from backend
   const fetchUserProfile = async (uid) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/users/${uid}`);
+      const response = await fetch(`${API_URL}/api/users/${uid}`);
       const data = await response.json();
       
       if (data.success) {

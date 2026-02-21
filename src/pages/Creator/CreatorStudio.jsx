@@ -6,6 +6,7 @@ import Canvas from "../../components/studio/Canvas";
 import ChatboxRightPanel from "../../components/studio/ChatboxRightPanel";
 import PanelOrderManager from "../../components/studio/PanelOrderManager";
 import UserProfileDropdown from "../../components/studio/ProfileDropdown";
+import API_URL from "../../../config"; // adjust path based on file location
 
 export default function CreatorStudio() {
   const { user } = useAuth();
@@ -34,7 +35,7 @@ export default function CreatorStudio() {
 
   const fetchEpisodeStatus = async () => {
     try {
-      const res  = await fetch(`http://localhost:8000/api/series/episode/${episodeId}`);
+      const res  = await fetch(`${API_URL}/api/series/episode/${episodeId}`);
       const data = await res.json();
       if (data.success) {
         setEpisodeStatus(data.episode.is_published ? "live" : "draft");
@@ -57,7 +58,7 @@ export default function CreatorStudio() {
 
     try {
       const res  = await fetch(
-        `http://localhost:8000/api/series/episode/${episodeId}/publish`,
+        `${API_URL}/api/series/episode/${episodeId}/publish`,
         { method: "POST" }
       );
       const data = await res.json();
@@ -84,7 +85,7 @@ export default function CreatorStudio() {
     if (!seriesId) return;
     setShowPublishMenu(false);
     try {
-      await fetch(`http://localhost:8000/api/series/${seriesId}/publish`, { method: "POST" });
+      await fetch(`${API_URL}/api/series/${seriesId}/publish`, { method: "POST" });
       alert("Series published! It will now appear on the Reader Home.");
     } catch (err) {
       alert("Failed to publish series.");
@@ -96,7 +97,7 @@ export default function CreatorStudio() {
     setPanels(updatedPanels);
     if (!episodeId) return;
     try {
-      await fetch(`http://localhost:8000/api/series/episode/${episodeId}/panels/save`, {
+      await fetch(`${API_URL}/api/series/episode/${episodeId}/panels/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

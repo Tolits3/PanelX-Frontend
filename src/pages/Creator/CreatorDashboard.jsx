@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import UserProfileDropdown from "../../components/studio/ProfileDropdown";
+import API_URL from "../../../config"; // adjust path based on file location
 
 export default function CreatorDashboard() {
   const { user, userProfile } = useAuth();
@@ -30,7 +31,7 @@ export default function CreatorDashboard() {
 
   const fetchSeries = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/series/creator/${user.uid}`);
+      const res = await fetch(`${API_URL}/api/series/creator/${user.uid}`);
       const data = await res.json();
       if (data.success) setSeries(data.series);
     } catch (err) {
@@ -42,7 +43,7 @@ export default function CreatorDashboard() {
 
   const fetchEpisodes = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/series/episode/creator/${user.uid}`);
+      const res = await fetch(`${API_URL}/api/series/episode/creator/${user.uid}`);
       const data = await res.json();
       if (data.success) setEpisodes(data.episodes);
     } catch (err) {
@@ -54,7 +55,7 @@ export default function CreatorDashboard() {
     if (!newSeriesData.title.trim()) return alert("Series needs a title!");
     setCreating(true);
     try {
-      const res = await fetch("http://localhost:8000/api/series/create", {
+      const res = await fetch(`${API_URL}/api/series/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ creator_uid: user.uid, ...newSeriesData }),
@@ -76,8 +77,8 @@ export default function CreatorDashboard() {
     setTogglingId(id);
     try {
       const endpoint = type === "series"
-        ? `http://localhost:8000/api/series/${id}/publish`
-        : `http://localhost:8000/api/series/episode/${id}/publish`;
+        ? `${API_URL}/api/series/${id}/publish`
+        : `${API_URL}/api/series/episode/${id}/publish`;
 
       const res = await fetch(endpoint, { method: "POST" });
       const data = await res.json();
@@ -105,7 +106,7 @@ export default function CreatorDashboard() {
     if (!title) return;
 
     try {
-      const res = await fetch("http://localhost:8000/api/series/episode/create", {
+      const res = await fetch(`${API_URL}/api/series/episode/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

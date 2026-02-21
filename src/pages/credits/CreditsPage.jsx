@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import API_URL from "../../../config"; // adjust path based on file location
 
 const PACKAGES = [
   {
@@ -77,7 +78,7 @@ export default function CreditsPage() {
 
   const fetchBalance = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/credits/balance/${user.uid}`);
+      const res = await fetch(`${API_URL}/api/credits/balance/${user.uid}`);
       const data = await res.json();
       if (data.success) setBalance(data.balance);
     } catch (err) {
@@ -89,7 +90,7 @@ export default function CreditsPage() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/credits/history/${user.uid}`);
+      const res = await fetch(`${API_URL}/api/credits/history/${user.uid}`);
       const data = await res.json();
       if (data.success) setTransactions(data.transactions);
     } catch (err) {
@@ -102,7 +103,7 @@ export default function CreditsPage() {
     try {
       // TODO: Replace with real Stripe checkout
       // For now, simulate purchase for testing
-      const res = await fetch("http://localhost:8000/api/credits/add", {
+      const res = await fetch(`${API_URL}/api/credits/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
