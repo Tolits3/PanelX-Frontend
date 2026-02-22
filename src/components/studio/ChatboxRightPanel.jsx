@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import API_URL from "../../../config";
+import API_URL from "../../config";
 
 export default function ChatboxRightPanel({ isOpen, onToggle }) {
   const [messages, setMessages] = useState([
@@ -71,7 +71,7 @@ export default function ChatboxRightPanel({ isOpen, onToggle }) {
           .replace(/create:/gi, "")
           .trim();
 
-        const response = await fetch("http://localhost:8000/api/chat/generate-image", {
+        const response = await fetch(`${API_URL}/api/chat/generate-image`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -102,7 +102,7 @@ export default function ChatboxRightPanel({ isOpen, onToggle }) {
 
       } else {
         // ─── REGULAR CHAT ───
-        const response = await fetch("http://localhost:8000/api/chat/message", {
+        const response = await fetch(`${API_URL}/api/chat/message`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -138,7 +138,7 @@ export default function ChatboxRightPanel({ isOpen, onToggle }) {
 Make sure:
 1. Backend is running (python main_simple.py)
 2. Replicate API key is in .env
-3. URL is correct: http://localhost:8000`,
+3. URL is correct: ${API_URL}`,
         timestamp: new Date(),
       };
 
