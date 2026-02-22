@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import VITE_API_URL from "../../config";
+import API_URL from "../../config";
 
 export default function RoleSelection() {
   const [selected, setSelected] = useState(null);
@@ -16,7 +16,7 @@ export default function RoleSelection() {
     setLoading(true);
     try {
       // Save role to backend
-      const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:8000"}/api/users/create`, {
+      const response = await fetch(`${API_URL}/api/users/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
