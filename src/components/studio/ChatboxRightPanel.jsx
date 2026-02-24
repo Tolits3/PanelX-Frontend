@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, use } from "react";
 import API_URL from "../../config";
 
 export default function ChatboxRightPanel({ isOpen, onToggle }) {
@@ -14,6 +14,7 @@ export default function ChatboxRightPanel({ isOpen, onToggle }) {
   const [isLoading, setIsLoading] = useState(false);
   const [backendStatus, setBackendStatus] = useState("checking");
   const messagesEndRef = useRef(null);
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -107,7 +108,9 @@ export default function ChatboxRightPanel({ isOpen, onToggle }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             message: originalMessage,
-            generate_image: false
+            generate_image: false,
+            user_id: user.uid,
+            session_id: sessionId
           }),
         });
 
