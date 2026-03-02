@@ -7,11 +7,13 @@ import ChatboxRightPanel from "../../components/studio/ChatboxRightPanel";
 import PanelOrderManager from "../../components/studio/PanelOrderManager";
 import UserProfileDropdown from "../../components/studio/ProfileDropdown";
 import API_URL from "../../../config"; // adjust path based on file location
+import PanelLayoutSelector from "./components/studio/PanelLayoutSelector";
 
 export default function CreatorStudio() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [showPanelLayoutSelector, setShowPanelLayoutSelector] = useState(false);
 
   // URL params — set when coming from dashboard
   const episodeId = searchParams.get("episode");
@@ -123,13 +125,18 @@ export default function CreatorStudio() {
           { icon: "😊", label: "Emoji",   color: "bg-purple-600 text-white" },
           { icon: "🖼️", label: "Panel",   color: "bg-green-600 text-white" },
         ].map((tool) => (
-          <button
+          <><button
             key={tool.label}
             className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${tool.color} hover:opacity-80`}
             title={tool.label}
           >
             <span className="text-2xl">{tool.icon}</span>
-          </button>
+          </button><button
+            onClick={() => setShowLayoutSelector(true)}
+            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold rounded-lg"
+          >
+              📐 Layouts
+            </button></>
         ))}
 
         <div className="flex-1" />
@@ -317,6 +324,26 @@ export default function CreatorStudio() {
           episodeId={episodeId}
         />
       )}
+
+      <PanelLayoutSelector
+  isOpen={showLayoutSelector}
+  onClose={() => setShowLayoutSelector(false)}
+  onSelectLayout={(layout) => {
+    // Apply the layout - create panels with the template positions
+    const newPanels = layout.panels.map((panel, idx) => ({
+      id: `panel_${Date.now()}_${idx}`,
+      x: panel.x,
+      y: panel.y,
+      width: panel.width,
+      height: panel.height,
+      image_url: "",
+      dialogues: []
+    }));
+    
+    setPanels(newPanels); // Set your panels state
+    console.log("Applied layout:", layout.name);
+  }}
+/>
 
       {/* ─── Click outside to close publish menu ─── */}
       {showPublishMenu && (

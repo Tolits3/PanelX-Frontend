@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import UserProfileDropdown from "../../components/studio/ProfileDropdown";
 import API_URL from "../../../config"; // adjust path based on file location
+import ThemeToggle from "../components/ThemeToggle";
 
 export default function CreatorDashboard() {
   const { user, userProfile } = useAuth();
@@ -131,12 +132,15 @@ export default function CreatorDashboard() {
 
       {/* ─── Header ─── */}
       <div className="bg-black/60 border-b border-yellow-500/30 px-6 py-4 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl font-black tracking-widest text-yellow-400">PANELX</span>
-          <span className="text-gray-600">/</span>
-          <span className="text-gray-400 text-sm">Creator Dashboard</span>
-        </div>
-        <div className="flex items-center gap-3">
+<div className="flex items-center gap-3">
+  <span className="text-2xl font-black tracking-widest text-yellow-400">PANELX</span>
+  <span className="text-gray-600">/</span>
+  <span className="text-gray-400 text-sm">Creator Dashboard</span>
+</div>
+<div className="flex items-center gap-3">
+  <ThemeToggle />
+</div>
+<div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/creator-studio")}
             className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black rounded-lg text-sm transition-all"

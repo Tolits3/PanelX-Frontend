@@ -1,9 +1,140 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────
+   DARK THEME (Default)
+   ───────────────────────────────────────── */
+:root.dark {
+  /* Backgrounds */
+  --bg-primary: #0B0B0B;
+  --bg-secondary: #0F2F26;
+  --bg-tertiary: #00A676;
+  --bg-card: rgba(17, 24, 39, 0.6);
+  --bg-hover: rgba(31, 41, 55, 0.8);
+  
+  /* Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+  
+  /* Accent */
+  --accent-primary: #FBBF24;
+  --accent-hover: #FCD34D;
+  
+  /* Borders */
+  --border-primary: rgba(75, 85, 99, 0.3);
+  --border-accent: rgba(251, 191, 36, 0.3);
+  
+  /* Success/Error */
+  --success: #10B981;
+  --error: #EF4444;
+}
+
+/* ─────────────────────────────────────────
+   LIGHT THEME
+   ───────────────────────────────────────── */
+:root.light {
+  /* Backgrounds */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F3F4F6;
+  --bg-tertiary: #E5E7EB;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-hover: rgba(243, 244, 246, 0.9);
+  
+  /* Text */
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-muted: #9CA3AF;
+  
+  /* Accent */
+  --accent-primary: #F59E0B;
+  --accent-hover: #D97706;
+  
+  /* Borders */
+  --border-primary: rgba(209, 213, 219, 0.5);
+  --border-accent: rgba(245, 158, 11, 0.3);
+  
+  /* Success/Error */
+  --success: #059669;
+  --error: #DC2626;
+}
+
+/* ─────────────────────────────────────────
+   GLOBAL STYLES
+   ───────────────────────────────────────── */
 body {
-  background-image: linear-gradient(to bottom right, #0f172a, #6366f1, #8b5cf6);
-  color: white;
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-primary),
+    var(--bg-secondary),
+    var(--bg-tertiary)
+  );
+  color: var(--text-primary);
   min-height: 100vh;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ─────────────────────────────────────────
+   UTILITY CLASSES
+   ───────────────────────────────────────── */
+.bg-theme-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-theme-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-theme-card {
+  background-color: var(--bg-card);
+}
+
+.text-theme-primary {
+  color: var(--text-primary);
+}
+
+.text-theme-secondary {
+  color: var(--text-secondary);
+}
+
+.text-theme-accent {
+  color: var(--accent-primary);
+}
+
+.border-theme {
+  border-color: var(--border-primary);
+}
+
+.border-theme-accent {
+  border-color: var(--border-accent);
+}
+
+/* ─────────────────────────────────────────
+   SMOOTH TRANSITIONS
+   ───────────────────────────────────────── */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* ─────────────────────────────────────────
+   SCROLLBAR STYLING
+   ───────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
 }
