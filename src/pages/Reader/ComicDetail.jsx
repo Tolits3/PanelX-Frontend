@@ -1,263 +1,313 @@
-// src/pages/Reader/ComicDetail.jsx
+// src/pages/Reader/ComicDetailPage.jsx
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import API_URL from "../../../config"; // adjust path based on file location
+import API_URL from "../../config";
 
-export default function ComicDetail() {
-  const { comicId } = useParams();
-  const navigate = useNavigate();
+export default function ComicDetailPage() {
+  const { seriesId } = useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [series, setSeries] = useState(null);
   const [episodes, setEpisodes] = useState([]);
-  const [progress, setProgress] = useState({});
   const [loading, setLoading] = useState(true);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
-    fetchSeries();
-  }, [comicId]);
+    fetchSeriesDetails();
+    fetchEpisodes();
+  }, [seriesId]);
 
-  const fetchSeries = async () => {
-    setLoading(true);
+  const fetchSeriesDetails = async () => {
     try {
-      // Fetch series + episodes
-      const res = await fetch(`${API_URL}/api/series/${comicId}`);
+      const res = await fetch(`${API_URL}/api/series/${seriesId}`);
       const data = await res.json();
-
+      
       if (data.success) {
         setSeries(data.series);
-        // Only show published episodes, sorted by episode number
-        const published = (data.series.episodes || [])
-          .filter(e => e.is_published)
-          .sort((a, b) => a.episode_number - b.episode_number);
-        setEpisodes(published);
       }
+    } catch (error) {
+      console.error("Error fetching series:", error);
+    }
+  };
 
-      // Fetch reading progress for this user
-      if (user) {
-        try {
-          const progRes = await fetch(
-            `${API_URL}/api/reading-progress/user/${user.uid}/comic/${comicId}`
-          );
-          const progData = await progRes.json();
-          if (progData.success) {
-            // Map episode_id → progress object
-            const map = {};
-            (progData.progress || []).forEach(p => {
-              map[p.chapter_id] = p;
-            });
-            setProgress(map);
-          }
-        } catch (_) {}
+  const fetchEpisodes = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/series/${seriesId}/episodes`);
+      const data = await res.json();
+      
+      if (data.success) {
+        // Sort by episode number descending (latest first)
+        const sorted = data.episodes.sort((a, b) => b.episode_number - a.episode_number);
+        setEpisodes(sorted);
       }
-    } catch (err) {
-      console.error("Failed to load series:", err);
+    } catch (error) {
+      console.error("Error fetching episodes:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const getLastReadEpisode = () => {
-    // Find most recently read episode
-    const readEps = Object.entries(progress)
-      .filter(([_, p]) => p.last_read)
-      .sort((a, b) => new Date(b[1].last_read) - new Date(a[1].last_read));
-    return readEps[0]?.[0] || null;
+  const handleBookmark = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const method = isBookmarked ? "DELETE" : "POST";
+      const res = await fetch(`${API_URL}/api/bookmarks/${seriesId}`, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_uid: user.uid })
+      });
+
+      if (res.ok) {
+        setIsBookmarked(!isBookmarked);
+      }
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+    }
   };
 
-  const handleContinue = () => {
-    const lastEpId = getLastReadEpisode();
-    if (lastEpId) {
-      navigate(`/reader/comic/${comicId}/chapter/${lastEpId}`);
-    } else if (episodes.length > 0) {
-      navigate(`/reader/comic/${comicId}/chapter/${episodes[0].id}`);
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: series?.title,
+        text: series?.description,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert("Link copied to clipboard!");
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#0B0B0B] via-[#0F2F26] to-[#0B0B0B] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-400">Loading series...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-b from-[#0B0B0B] via-[#0F2F26] to-[#00A676] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!series) {
     return (
-      <div className="min-h-screen bg-[#0B0B0B] flex flex-col items-center justify-center gap-4">
-        <p className="text-5xl">😕</p>
-        <p className="text-white font-bold text-xl">Series not found</p>
-        <button
-          onClick={() => navigate("/reader-home")}
-          className="px-6 py-3 bg-yellow-500 text-gray-900 font-black rounded-xl"
-        >
-          ← Back to Home
-        </button>
+      <div className="min-h-screen bg-gradient-to-b from-[#0B0B0B] via-[#0F2F26] to-[#00A676] flex items-center justify-center">
+        <p className="text-white text-xl">Series not found</p>
       </div>
     );
   }
 
-  const lastReadEpId = getLastReadEpisode();
-  const hasProgress = Object.keys(progress).length > 0;
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0B0B0B] via-[#0F2F26] to-[#0B0B0B]">
-
-      {/* ─── Header ─── */}
-      <div className="bg-black/60 border-b border-yellow-500/30 px-6 py-4 flex items-center gap-4 sticky top-0 z-20 backdrop-blur-md">
-        <button
-          onClick={() => navigate("/reader-home")}
-          className="text-gray-400 hover:text-yellow-400 transition-colors font-bold"
-        >
-          ← Back
-        </button>
-        <span className="text-yellow-400 font-black text-xl tracking-widest">PANELX</span>
+    <div className="min-h-screen bg-gradient-to-b from-[#0B0B0B] via-[#0F2F26] to-[#00A676]">
+      
+      {/* Header */}
+      <div className="bg-black/40 border-b border-yellow-500/30 px-6 py-4 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto flex items-center gap-4">
+          <button
+            onClick={() => navigate("/reader-home")}
+            className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
+          >
+            ←
+          </button>
+          <h1 className="text-xl font-black text-white">Back to Browse</h1>
+        </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-8">
-
-        {/* ─── Series Hero ─── */}
-        <div className="flex gap-6 mb-8">
-          {/* Cover */}
-          <div className="w-36 h-48 bg-gray-800 rounded-xl overflow-hidden flex-shrink-0 border border-gray-700">
-            {series.cover_image_url ? (
-              <img
-                src={series.cover_image_url}
-                alt={series.title}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-5xl opacity-30">📚</div>
-            )}
-          </div>
-
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
-              {series.genre && (
-                <span className="bg-yellow-500 text-gray-900 text-xs font-black px-2 py-1 rounded-full">
-                  {series.genre}
-                </span>
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        
+        {/* ═══════════════════════════════════════════
+            HERO SECTION - Cover + Info
+            ═══════════════════════════════════════════ */}
+        <div className="bg-gray-900/60 backdrop-blur-sm border border-gray-700 rounded-3xl overflow-hidden mb-8">
+          <div className="grid md:grid-cols-[300px_1fr] gap-8 p-8">
+            
+            {/* Cover Image */}
+            <div className="relative">
+              {series.cover_image_url ? (
+                <img
+                  src={series.cover_image_url}
+                  alt={series.title}
+                  className="w-full aspect-[2/3] object-cover rounded-xl shadow-2xl"
+                />
+              ) : (
+                <div className="w-full aspect-[2/3] bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center">
+                  <span className="text-6xl opacity-30">📖</span>
+                </div>
               )}
-              <span className="bg-green-500/20 text-green-400 border border-green-500/30 text-xs font-bold px-2 py-1 rounded-full">
-                {series.status || "Ongoing"}
-              </span>
+
+              {/* Status Badge */}
+              <div className="absolute top-4 right-4">
+                <span className={`px-3 py-1 rounded-full text-xs font-black ${
+                  series.status === "completed" 
+                    ? "bg-green-500 text-gray-900"
+                    : "bg-yellow-500 text-gray-900"
+                }`}>
+                  {series.status?.toUpperCase() || "ONGOING"}
+                </span>
+              </div>
             </div>
 
-            <h1 className="text-3xl font-black text-white mb-2">{series.title}</h1>
-            <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-              {series.description || "No description provided."}
-            </p>
+            {/* Info */}
+            <div className="flex flex-col">
+              
+              {/* Title */}
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
+                {series.title}
+              </h1>
 
-            <div className="flex items-center gap-4 text-sm text-gray-500 mb-5">
-              <span>📖 {episodes.length} episodes</span>
-              <span>👁️ {series.view_count || 0} views</span>
-              <span>❤️ {series.like_count || 0} likes</span>
+              {/* Creator */}
+              <p className="text-gray-400 text-lg mb-6">
+                by <span className="text-yellow-400 font-bold">{series.creator_name || "Unknown"}</span>
+              </p>
+
+              {/* Tags */}
+              {series.tags && (
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {series.tags.split(",").map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1 bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 rounded-full text-sm font-bold"
+                    >
+                      {tag.trim()}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Stats */}
+              <div className="flex items-center gap-6 mb-6">
+                <div className="flex items-center gap-2">
+                  <span className="text-yellow-400 text-2xl">⭐</span>
+                  <span className="text-white font-bold text-lg">
+                    {series.rating || "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-2xl">👁️</span>
+                  <span className="text-white font-bold text-lg">
+                    {series.view_count?.toLocaleString() || 0}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-red-400 text-2xl">❤️</span>
+                  <span className="text-white font-bold text-lg">
+                    {series.like_count?.toLocaleString() || 0}
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-gray-300 text-base leading-relaxed mb-8 flex-1">
+                {series.description || "No description available."}
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => {
+                    const firstEpisode = episodes[episodes.length - 1]; // Get first episode
+                    if (firstEpisode) {
+                      navigate(`/read/${seriesId}/${firstEpisode.id}`);
+                    }
+                  }}
+                  className="flex-1 min-w-[200px] px-6 py-4 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black rounded-xl transition-all transform hover:scale-105 shadow-lg"
+                >
+                  📖 Start Reading
+                </button>
+                
+                <button
+                  onClick={handleBookmark}
+                  className={`px-6 py-4 rounded-xl font-bold transition-all ${
+                    isBookmarked
+                      ? "bg-yellow-500 text-gray-900"
+                      : "bg-gray-800 hover:bg-gray-700 text-white"
+                  }`}
+                >
+                  {isBookmarked ? "★ Bookmarked" : "☆ Bookmark"}
+                </button>
+
+                <button
+                  onClick={handleShare}
+                  className="px-6 py-4 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-xl transition-all"
+                >
+                  🔗 Share
+                </button>
+              </div>
             </div>
-
-            {/* CTA Button */}
-            {episodes.length > 0 && (
-              <button
-                onClick={handleContinue}
-                className="px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black rounded-xl transition-all transform hover:scale-105"
-              >
-                {hasProgress ? "▶ Continue Reading" : "▶ Start Reading"}
-              </button>
-            )}
           </div>
         </div>
 
-        {/* ─── Episodes List ─── */}
-        <div>
-          <h2 className="text-xl font-black text-white mb-4 flex items-center gap-2">
-            <span className="w-1 h-6 bg-yellow-500 rounded-full inline-block" />
-            Episodes
-            <span className="text-gray-500 font-normal text-sm">({episodes.length})</span>
-          </h2>
-
-          {episodes.length === 0 ? (
-            <div className="text-center py-12 border border-dashed border-gray-700 rounded-2xl">
-              <p className="text-5xl mb-3">📭</p>
-              <p className="text-gray-400">No episodes published yet</p>
-              <p className="text-gray-600 text-sm mt-1">Check back later!</p>
+        {/* ═══════════════════════════════════════════
+            CHAPTERS SECTION
+            ═══════════════════════════════════════════ */}
+        <div className="bg-gray-900/60 backdrop-blur-sm border border-gray-700 rounded-3xl overflow-hidden">
+          
+          {/* Header */}
+          <div className="p-6 border-b border-gray-700 flex items-center justify-between">
+            <h2 className="text-2xl font-black text-white">
+              📚 Chapters ({episodes.length})
+            </h2>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400 text-sm">Sort:</span>
+              <select className="bg-gray-800 text-white px-3 py-2 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                <option>Latest First</option>
+                <option>Oldest First</option>
+              </select>
             </div>
-          ) : (
-            <div className="space-y-3">
-              {episodes.map((ep) => {
-                const epProgress = progress[ep.id];
-                const isRead = epProgress?.completed;
-                const isLastRead = ep.id === lastReadEpId;
+          </div>
 
-                return (
-                  <div
-                    key={ep.id}
-                    onClick={() => navigate(`/reader/comic/${comicId}/chapter/${ep.id}`)}
-                    className="flex items-center gap-4 bg-gray-900/60 hover:bg-gray-800/80 border border-gray-700 hover:border-yellow-500/40 rounded-xl p-4 cursor-pointer transition-all group"
-                  >
-                    {/* Thumbnail */}
-                    <div className="w-16 h-16 bg-gray-800 rounded-lg overflow-hidden flex-shrink-0">
-                      {ep.thumbnail_url ? (
-                        <img
-                          src={ep.thumbnail_url}
-                          alt={ep.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-2xl opacity-30">📖</div>
-                      )}
+          {/* Chapter List */}
+          <div className="divide-y divide-gray-700">
+            {episodes.length > 0 ? (
+              episodes.map((episode) => (
+                <button
+                  key={episode.id}
+                  onClick={() => navigate(`/read/${seriesId}/${episode.id}`)}
+                  className="w-full px-6 py-5 hover:bg-gray-800/50 transition-all group flex items-center gap-4"
+                >
+                  {/* Thumbnail */}
+                  {episode.thumbnail_url ? (
+                    <img
+                      src={episode.thumbnail_url}
+                      alt={episode.title}
+                      className="w-16 h-16 object-cover rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 bg-gray-800 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">📄</span>
                     </div>
+                  )}
 
-                    {/* Episode Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-yellow-400 font-black text-xs">
-                          EP {ep.episode_number}
-                        </span>
-                        {isLastRead && (
-                          <span className="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-full font-bold">
-                            Last Read
-                          </span>
-                        )}
-                        {isRead && (
-                          <span className="text-green-400 text-xs font-bold">✓ Read</span>
-                        )}
-                      </div>
-                      <p className="text-white font-bold truncate">{ep.title}</p>
-                      <p className="text-gray-500 text-xs mt-0.5">
-                        {ep.published_at
-                          ? new Date(ep.published_at).toLocaleDateString("en-US", {
-                              month: "short", day: "numeric", year: "numeric"
-                            })
-                          : "Recently published"}
-                      </p>
-                    </div>
-
-                    {/* Read progress bar */}
-                    {epProgress && !isRead && (
-                      <div className="flex-shrink-0 w-16">
-                        <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-yellow-500 rounded-full"
-                            style={{ width: `${Math.min((epProgress.page_number || 0) * 10, 100)}%` }}
-                          />
-                        </div>
-                        <p className="text-gray-600 text-xs mt-1 text-center">In progress</p>
-                      </div>
-                    )}
-
-                    {/* Arrow */}
-                    <span className="text-gray-600 group-hover:text-yellow-400 transition-colors flex-shrink-0 text-lg">
-                      →
-                    </span>
+                  {/* Info */}
+                  <div className="flex-1 text-left">
+                    <p className="text-yellow-400 text-xs font-bold mb-1">
+                      Chapter {episode.episode_number}
+                    </p>
+                    <h3 className="text-white font-bold text-lg group-hover:text-yellow-400 transition-colors">
+                      {episode.title}
+                    </h3>
+                    <p className="text-gray-500 text-sm mt-1">
+                      {new Date(episode.published_at || episode.created_at).toLocaleDateString()}
+                    </p>
                   </div>
-                );
-              })}
-            </div>
-          )}
+
+                  {/* Arrow */}
+                  <div className="text-gray-600 group-hover:text-yellow-400 transition-colors">
+                    →
+                  </div>
+                </button>
+              ))
+            ) : (
+              <div className="p-12 text-center">
+                <p className="text-5xl mb-4">📭</p>
+                <p className="text-white font-bold text-xl mb-2">No chapters yet</p>
+                <p className="text-gray-400">This series hasn't published any chapters</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
