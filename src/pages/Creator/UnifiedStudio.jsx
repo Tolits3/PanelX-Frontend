@@ -6,9 +6,9 @@ import API_URL from "../../config";
 
 // Sub-components (we'll create these next)
 import TopToolbar from "../../components/studio/unified/TopToolBar";
-import LeftSidebar from "../../components/studio/unified/LeftSidebar";
+import LeftSidebar from "../../components/studio/unified/LeftSideBar";
 import CenterCanvas from "../../components/studio/unified/CenterCanvas";
-import RightSidebar from "../../components/studio/unified/RightSidebar";
+import RightSidebar from "../../components/studio/unified/RightSideBar";
 
 export default function UnifiedStudio() {
   const { episodeId, seriesId } = useParams();
