@@ -40,9 +40,9 @@ export default function LandingPage() {
             }}
           >
             <h1 className="text-6xl md:text-8xl font-black text-white mb-6 leading-tight">
-              PanelX is the Ultimate Comic Creation Platform with Ai
+              Create Comics
               <br />
-              <span className="text-yellow-400">PanelX is still in development so there might be unavailable features</span>
+              <span className="text-yellow-400">With AI</span>
             </h1>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
@@ -65,6 +65,21 @@ export default function LandingPage() {
           <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
             <div className="w-1 h-3 bg-white rounded-full" />
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          STATUS SECTION - Development Notice
+          ═══════════════════════════════════════════ */}
+      <section className="py-20 px-6 bg-gradient-to-b from-[#00A676] to-[#0F2F26]">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
+            PanelX is Currently<br />
+            <span className="text-green-400">Still Being Developed</span>
+          </h2>
+          <p className="text-gray-300 md:text-xl">
+            But you can sign up for free and be among the first to create!
+          </p>
         </div>
       </section>
 
