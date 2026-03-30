@@ -83,57 +83,56 @@ function PanelItem({ panel, isActive, onClick, onDelete, activeTool, toolSetting
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onDelete(panel.id);
-        }}
-        className="absolute top-2 right-2 z-10 bg-red-600 text-white px-2 py-1 rounded"
-      >
-        ✕
-      </button>
+            onDelete(panel.id);
+          }}
+          className="absolute top-2 right-2 z-10 bg-red-600 text-white px-2 py-1 rounded"
+          >
+          ✕
+          </button>
 
-      {/* Canvas */}
-      <div onClick={() => onClick(panel.id)}>
-        <canvas ref={canvasRef} />
-      </div>
-    </div>
-  );
-}
+          {/* Canvas */}
+          <div onClick={() => onClick(panel.id)} className="relative">
+          <canvas ref={canvasRef} />
 
-      {/* Placeholder if empty */}
-      {(!panel.layers || panel.layers.length === 0) && !isActive && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="text-center text-gray-400">
-            <p className="text-6xl mb-2">🎨</p>
-            <p className="font-bold">Empty Panel</p>
-            <p className="text-sm">Click to select and start drawing</p>
+          {/* ✅ FIXED PLACE */}
+          {(!panel.layers || panel.layers.length === 0) && !isActive && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="text-center text-gray-400">
+              <p className="text-6xl mb-2">🎨</p>
+              <p className="font-bold">Empty Panel</p>
+              <p className="text-sm">Click to select and start drawing</p>
+            </div>
+            </div>
+          )}
           </div>
         </div>
-      )}
+        );
+      }
 
+      export default function CenterCanvas({
+        panels,
+        activePanelId,
+        setActivePanelId,
+        activeTool,
+        toolSettings,
+        zoom,
+        setZoom,
+        gridEnabled,
+        snapEnabled,
+        onUpdatePanel,
+        onReorderPanels
+      }) {
+        const canvasContainerRef = useRef(null);
 
-export default function CenterCanvas({
-  panels,
-  activePanelId,
-  setActivePanelId,
-  activeTool,
-  toolSettings,
-  zoom,
-  setZoom,
-  gridEnabled,
-  snapEnabled,
-  onUpdatePanel,
-  onReorderPanels
-}) {
-  const canvasContainerRef = useRef(null);
+        const sensors = useSensors(
+        useSensor(PointerSensor, {
+          activationConstraint: {
+          distance: 8,
+          },
+        })
+        );
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    })
-  );
-
-  const handleDragEnd = (event) => {
+        const handleDragEnd = (event) => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
