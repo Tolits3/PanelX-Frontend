@@ -60,24 +60,26 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Status Section */}
-          <section className="absolute bottom-32 left-0 right-0 z-10">
-            <div className="relative max-w-3xl mx-auto px-6 text-center">
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
-                PanelX is Currently<br />
-                <span className="text-green-400">Still Being Developed</span>
-              </h2>
-              <p className="text-gray-400 md:text-xl text-gray-300">
-                But you can sign up for free and be among the first to create!
-              </p>
-            </div>
-          </section>
-
           {/* Scroll Indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
           <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
             <div className="w-1 h-3 bg-white rounded-full" />
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          STATUS SECTION - Development Notice
+          ═══════════════════════════════════════════ */}
+      <section className="py-20 px-6 bg-gradient-to-b from-[#00A676] to-[#0F2F26]">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
+            PanelX is Currently<br />
+            <span className="text-green-400">Still Being Developed</span>
+          </h2>
+          <p className="text-gray-300 md:text-xl">
+            But you can sign up for free and be among the first to create!
+          </p>
         </div>
       </section>
 

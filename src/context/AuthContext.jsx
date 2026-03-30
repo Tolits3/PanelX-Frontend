@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
   // Create user profile in backend
   const createUserProfile = async (uid, email, role) => {
     try {
-      const response = await fetch("http://localhost:8000/api/users/create", {
+      const response = await fetch(`${API_URL}/api/users/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
