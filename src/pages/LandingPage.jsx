@@ -44,9 +44,6 @@ export default function LandingPage() {
               <br />
               <span className="text-yellow-400">With AI</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto">
-              PanelX is still currently being developed, so there might be unavailable features and bugs. But you can sign up for free and be among the first to create!
-            </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => navigate("/signup")}
@@ -70,7 +67,7 @@ export default function LandingPage() {
                 PanelX is Currently<br />
                 <span className="text-yellow-400">Still Being Developed</span>
               </h2>
-              <p className="text-lg md:text-xl text-gray-300">
+              <p className="text-green-500 md:text-xl text-gray-300">
                 But you can sign up for free and be among the first to create!
               </p>
             </div>
