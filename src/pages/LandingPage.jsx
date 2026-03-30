@@ -65,9 +65,9 @@ export default function LandingPage() {
             <div className="relative max-w-3xl mx-auto px-6 text-center">
               <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
                 PanelX is Currently<br />
-                <span className="text-yellow-400">Still Being Developed</span>
+                <span className="text-green-400">Still Being Developed</span>
               </h2>
-              <p className="text-green-500 md:text-xl text-gray-300">
+              <p className="text-gray-400 md:text-xl text-gray-300">
                 But you can sign up for free and be among the first to create!
               </p>
             </div>
