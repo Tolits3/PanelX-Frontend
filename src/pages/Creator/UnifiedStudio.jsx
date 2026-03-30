@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import API_URL from "../../config";
 
 // Sub-components (we'll create these next)
-import TopToolbar from "../../components/studio/unified/TopToolbar";
+import TopToolbar from "../../components/studio/unified/TopToolBar";
 import LeftSidebar from "../../components/studio/unified/LeftSidebar";
 import CenterCanvas from "../../components/studio/unified/CenterCanvas";
 import RightSidebar from "../../components/studio/unified/RightSidebar";
