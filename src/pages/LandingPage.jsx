@@ -32,38 +32,51 @@ export default function LandingPage() {
         </div>
 
         {/* Hero Content */}
-        <div
-          className="relative z-10 text-center px-6 max-w-5xl mx-auto"
-          style={{
-            transform: `translateY(${scrollY * 0.3}px)`,
-            opacity: Math.max(0, 1 - scrollY / 500)
-          }}
-        >
-          <h1 className="text-6xl md:text-8xl font-black text-white mb-6 leading-tight">
-            Create Comics
-            <br />
-            <span className="text-yellow-400">With AI</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto">
-            Transform your stories into stunning comic panels with the power of artificial intelligence
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => navigate("/signup")}
-              className="px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black text-lg rounded-xl transition-all transform hover:scale-105 shadow-2xl"
-            >
-              Start Creating Free
-            </button>
-            <button
-              onClick={() => navigate("/login")}
-              className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold text-lg rounded-xl transition-all border-2 border-white/30"
-            >
-              Sign In
-            </button>
+          <div
+            className="relative z-10 text-center px-6 max-w-5xl mx-auto"
+            style={{
+              transform: `translateY(${scrollY * 0.3}px)`,
+              opacity: Math.max(0, 1 - scrollY / 500)
+            }}
+          >
+            <h1 className="text-6xl md:text-8xl font-black text-white mb-6 leading-tight">
+              Create Comics
+              <br />
+              <span className="text-yellow-400">With AI</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto">
+              PanelX is still currently being developed, so there might be unavailable features and bugs. But you can sign up for free and be among the first to create!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => navigate("/signup")}
+                className="px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black text-lg rounded-xl transition-all transform hover:scale-105 shadow-2xl"
+              >
+                Start Creating Free
+              </button>
+              <button
+                onClick={() => navigate("/login")}
+                className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold text-lg rounded-xl transition-all border-2 border-white/30"
+              >
+                Sign In
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* Scroll Indicator */}
+          {/* Status Section */}
+          <section className="absolute bottom-32 left-0 right-0 z-10">
+            <div className="relative max-w-3xl mx-auto px-6 text-center">
+              <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
+                PanelX is Currently<br />
+                <span className="text-yellow-400">Still Being Developed</span>
+              </h2>
+              <p className="text-lg md:text-xl text-gray-300">
+                But you can sign up for free and be among the first to create!
+              </p>
+            </div>
+          </section>
+
+          {/* Scroll Indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
           <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
             <div className="w-1 h-3 bg-white rounded-full" />
