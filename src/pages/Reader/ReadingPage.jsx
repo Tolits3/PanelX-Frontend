@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import API_URL from "../../../config"; // adjust path based on file location
+import API_URL from "../../config"; // adjust path based on file location
 
 export default function ReadingPage() {
   const { comicId, chapterId } = useParams();

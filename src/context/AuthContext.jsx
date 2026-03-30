@@ -7,7 +7,7 @@ import {
   onAuthStateChanged
 } from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import API_URL from "../../config"; // adjust path based on file location
+import API_URL from "../config"; // adjust path based on file location
 
 fetch(`${API_URL}/api/series/all`)
 

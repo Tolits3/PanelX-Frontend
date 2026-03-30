@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import UserProfileDropdown from "../../components/studio/ProfileDropdown";
-import API_URL from "../../../config"; // adjust path based on file location
+import API_URL from "../../config"; // adjust path based on file location
 import ThemeToggle from "../../components/ThemeToggle";
 import Header from "../../components/Header";
 
@@ -149,12 +149,12 @@ export default function CreatorDashboard() {
           <ThemeToggle />
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate("/creator-studio")}
-            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black rounded-lg text-sm transition-all"
-          >
-            🎨 Open Studio
-          </button>
+       <button
+  onClick={() => navigate("/unified-studio")}
+  className="px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-black rounded-xl"
+>
+  🎨 Open Studio
+</button>
           <button
             onClick={() => navigate("/credits")}
             className="px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-yellow-500/40 text-yellow-400 rounded-lg text-sm transition-all"

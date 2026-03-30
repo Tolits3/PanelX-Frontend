@@ -18,6 +18,7 @@ import ReadingPage from "./pages/Reader/ReadingPage";
 import CreatorWelcome from "./pages/Creator/CreatorWelcome";
 import CreatorDashboard from "./pages/Creator/CreatorDashboard";
 import CreatorStudio from "./pages/Creator/CreatorStudio";
+import UnifiedStudio from "./pages/Creator/UnifiedStudio";
 import CharacterCreator from "./pages/Creator/CharacterCreator";
 
 // Editor
@@ -105,6 +106,24 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/unified-studio"
+          element={
+            <ProtectedRoute>
+              <UnifiedStudio />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+  path="/unified-studio/:seriesId/:episodeId"
+  element={
+    <ProtectedRoute>
+      <UnifiedStudio />
+    </ProtectedRoute>
+  }
+/>
 
         <Route
           path="/create-character"

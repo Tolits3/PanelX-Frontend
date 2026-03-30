@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import UserProfileDropdown from "./UserProfileDropdown";
-import API_URL from "../../../config"; // adjust path based on file location
+import API_URL from "../../config"; // adjust path based on file location
 import ThemeToggle from "../../components/ThemeToggle";
 
 export default function ReaderHomePage() {

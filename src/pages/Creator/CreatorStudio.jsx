@@ -6,14 +6,17 @@ import Canvas from "../../components/studio/Canvas";
 import ChatboxRightPanel from "../../components/studio/ChatboxRightPanel";
 import PanelOrderManager from "../../components/studio/PanelOrderManager";
 import UserProfileDropdown from "../../components/studio/ProfileDropdown";
-import API_URL from "../../../config"; // adjust path based on file location
-import PanelLayoutSelector from "./components/studio/PanelLayoutSelector";
+import API_URL from "../../config"; // adjust path based on file location
+import PanelLayoutSelector from "../../components/studio/PanelLayoutSelector";
+import DrawingTool from "../../components/studio/DrawingTool";
 
 export default function CreatorStudio() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [showPanelLayoutSelector, setShowPanelLayoutSelector] = useState(false);
+  const [showLayoutSelector, setShowLayoutSelector] = useState(false);
+  const [showDrawingTool, setShowDrawingTool] = useState(false)
 
   // URL params — set when coming from dashboard
   const episodeId = searchParams.get("episode");
@@ -369,6 +372,22 @@ export default function CreatorStudio() {
           >
             Dashboard →
           </button>
+          <PanelLayoutSelector
+  isOpen={showLayoutSelector}
+  onClose={() => setShowLayoutSelector(false)}
+  onSelectLayout={(layout) => {
+    console.log("Layout selected:", layout);
+    setShowLayoutSelector(false);
+  }}
+/>
+<DrawingTool
+  isOpen={showDrawingTool}
+  onClose={() => setShowDrawingTool(false)}
+  onSave={(blob, dataUrl) => {
+    console.log("Drawing saved!");
+    setShowDrawingTool(false);
+  }}
+/>
         </div>
       )}
     </div>
