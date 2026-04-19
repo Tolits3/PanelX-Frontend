@@ -11,42 +11,39 @@ export default function RoleSelection() {
   const navigate = useNavigate();
 
 const handleContinue = async () => {
-  if (!selected) return;
-  
+  if (!selectedRole || !user) return;
+
   setLoading(true);
   try {
-    const response = await fetch(`${API_URL}/api/users/create`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         uid: user.uid,
         email: user.email,
-        username: user.email.split("@")[0], // ← generates username from email
-        role: selected,                      // ← "creator" or "reader"
-        avatar_url: user.photoURL || "",     // ← from Firebase (empty if none)
-        bio: ""                              // ← empty for now
-      })
+        username: user.email.split("@")[0],
+        role: selectedRole,
+        avatar_url: user.photoURL || "",
+        bio: "",
+      }),
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
 
     const data = await response.json();
 
-    if (data.success) {
-      // Navigate based on role
-      if (selected === "creator") {
-        navigate("/creator-dashboard");
-      } else {
-        navigate("/reader-dashboard");
-      }
+    console.log("🎯 Backend response:", data);
+
+    if (selectedRole === "creator") {
+      navigate("/creator-dashboard");
     } else {
-      alert(data.message || "Failed to create profile. Please try again.");
+      navigate("/reader-dashboard");
     }
   } catch (error) {
-    console.error("Error creating profile:", error);
-    alert("Something went wrong!");
+    console.error("Error:", error);
+    if (selectedRole === "creator") {
+      navigate("/creator-dashboard");
+    } else {
+      navigate("/reader-dashboard");
+    }
   } finally {
     setLoading(false);
   }
