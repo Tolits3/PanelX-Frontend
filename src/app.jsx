@@ -20,6 +20,7 @@ import CreatorDashboard from "./pages/Creator/CreatorDashboard";
 import CreatorStudio from "./pages/Creator/CreatorStudio";
 import UnifiedStudio from "./pages/Creator/UnifiedStudio";
 import CharacterCreator from "./pages/Creator/CharacterCreator";
+import CreditsPage from "./pages/Creator/CreditsPage";
 
 // Editor
 import PanelEditor from "./components/PanelEditor";
@@ -94,6 +95,15 @@ function App() {
           element={
             <ProtectedRoute>
               <CreatorDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/credits"
+          element={
+            <ProtectedRoute>
+              <CreditsPage />
             </ProtectedRoute>
           }
         />
