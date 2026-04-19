@@ -10,40 +10,43 @@ export default function RoleSelection() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handleContinue = async () => {
-    if (!selected) return;
+const handleContinue = async () => {
+  if (!selected) return;
+  
+  setLoading(true);
+  try {
+    const response = await fetch(`${API_URL}/api/users/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+        username: user.email.split("@")[0], // ← generates username from email
+        role: selected,                      // ← "creator" or "reader"
+        avatar_url: user.photoURL || "",     // ← from Firebase (empty if none)
+        bio: ""                              // ← empty for now
+      })
+    });
 
-    setLoading(true);
-    try {
-      // Save role to backend
-      const response = await fetch(`${API_URL}/api/users/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          uid: user.uid,
-          email: user.email,
-          role: selected,
-          created_at: new Date().toISOString(),
-        }),
-      });
+    const data = await response.json();
 
-      if (response.ok) {
-        // Navigate based on role
-        if (selected === "creator") {
-          navigate("/creator-dashboard");
-        } else {
-          navigate("/reader-home");
-        }
+    if (data.success) {
+      // Navigate based on role
+      if (selected === "creator") {
+        navigate("/creator-dashboard");
       } else {
-        alert("Failed to create profile. Please try again.");
+        navigate("/reader-dashboard");
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } else {
       alert("Failed to create profile. Please try again.");
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    console.error("Error creating profile:", error);
+    alert("Something went wrong!");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0B0B0B] via-[#0F2F26] to-[#00A676] flex items-center justify-center p-4">
