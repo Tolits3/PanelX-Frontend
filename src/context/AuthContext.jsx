@@ -26,6 +26,12 @@ export function AuthProvider({ children }) {
   const fetchUserProfile = async (uid) => {
     try {
       const response = await fetch(`${API_URL}/api/users/${uid}`);
+      
+      if (!response.ok) {
+        console.error("Failed to fetch user profile:", response.status);
+        return null;
+      }
+      
       const data = await response.json();
       
       if (data.success) {
@@ -40,33 +46,33 @@ export function AuthProvider({ children }) {
   };
 
   // Create user profile in backend
-  const createUserProfile = async (uid, email, role) => {
-    try {
-      const response = await fetch(`${API_URL}/api/users/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          uid,
-          email,
-          role,
-          created_at: new Date().toISOString(),
-        }),
-      });
+const createUserProfile = async (uid, email, role) => {
+  try {
+    const response = await fetch(`${API_URL}/api/users/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uid,
+        email,
+        username: email.split("@")[0],  // ← ADD THIS
+        role,
+        avatar_url: "",                  // ← ADD THIS
+        bio: ""                          // ← ADD THIS
+        // ← REMOVE created_at
+      }),
+    });
 
-      const data = await response.json();
-      
-      if (data.success) {
-        setUserProfile(data.user);
-        return data.user;
-      }
-      return null;
-    } catch (error) {
-      console.error("Error creating user profile:", error);
-      return null;
-    }
-  };
+    const data = await response.json();
+    console.log("Profile created:", data);
+    return data;
+
+  } catch (error) {
+    console.error("Error creating profile:", error);
+    throw error;
+  }
+};
 
   // Sign up - FIXED: ensure email and password are strings
   const signup = async (email, password) => {

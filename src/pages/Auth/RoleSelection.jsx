@@ -28,6 +28,10 @@ const handleContinue = async () => {
       })
     });
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
 
     if (data.success) {
@@ -38,7 +42,7 @@ const handleContinue = async () => {
         navigate("/reader-dashboard");
       }
     } else {
-      alert("Failed to create profile. Please try again.");
+      alert(data.message || "Failed to create profile. Please try again.");
     }
   } catch (error) {
     console.error("Error creating profile:", error);
