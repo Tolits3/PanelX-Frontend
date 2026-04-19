@@ -10,44 +10,39 @@ export default function RoleSelection() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-const handleContinue = async () => {
-  if (!selectedRole || !user) return;
+  const handleContinue = async () => {
+    if (!selected || !user) return; // ← was "selectedRole", now "selected"
 
-  setLoading(true);
-  try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/create`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        uid: user.uid,
-        email: user.email,
-        username: user.email.split("@")[0],
-        role: selectedRole,
-        avatar_url: user.photoURL || "",
-        bio: "",
-      }),
-    });
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/users/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          username: user.email.split("@")[0],
+          role: selected, // ← was "selectedRole"
+          avatar_url: user.photoURL || "",
+          bio: "",
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
+      console.log("✅ Backend response:", data);
 
-    console.log("🎯 Backend response:", data);
-
-    if (selectedRole === "creator") {
-      navigate("/creator-dashboard");
-    } else {
-      navigate("/reader-dashboard");
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      // Always navigate - happens even if API errors
+      setLoading(false);
+      if (selected === "creator") { // ← was "selectedRole"
+        navigate("/creator-dashboard");
+      } else {
+        navigate("/reader-dashboard");
+      }
     }
-  } catch (error) {
-    console.error("Error:", error);
-    if (selectedRole === "creator") {
-      navigate("/creator-dashboard");
-    } else {
-      navigate("/reader-dashboard");
-    }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0B0B0B] via-[#0F2F26] to-[#00A676] flex items-center justify-center p-4">
@@ -73,40 +68,16 @@ const handleContinue = async () => {
                 : "border-gray-700 bg-gray-900/60 hover:border-yellow-500/50"
             }`}
           >
-            {/* Icon */}
             <div className="text-6xl mb-4">🎨</div>
-
-            {/* Title */}
-            <h2 className="text-2xl font-black text-white mb-3">
-              Creator
-            </h2>
-
-            {/* Description */}
-            <p className="text-gray-400 mb-6">
-              Create amazing comics with AI assistance
-            </p>
-
-            {/* Features */}
+            <h2 className="text-2xl font-black text-white mb-3">Creator</h2>
+            <p className="text-gray-400 mb-6">Create amazing comics with AI assistance</p>
             <ul className="space-y-2">
-              <li className="flex items-center gap-2 text-yellow-400 text-sm">
-                <span>✓</span>
-                <span>AI-powered image generation</span>
-              </li>
-              <li className="flex items-center gap-2 text-yellow-400 text-sm">
-                <span>✓</span>
-                <span>Panel editor & dialogue tools</span>
-              </li>
-              <li className="flex items-center gap-2 text-yellow-400 text-sm">
-                <span>✓</span>
-                <span>Publish your comics</span>
-              </li>
-              <li className="flex items-center gap-2 text-yellow-400 text-sm">
-                <span>✓</span>
-                <span>Creator dashboard</span>
-              </li>
+              {["AI-powered image generation", "Panel editor & dialogue tools", "Publish your comics", "Creator dashboard"].map((f) => (
+                <li key={f} className="flex items-center gap-2 text-yellow-400 text-sm">
+                  <span>✓</span><span>{f}</span>
+                </li>
+              ))}
             </ul>
-
-            {/* Selected Badge */}
             {selected === "creator" && (
               <div className="absolute top-4 right-4 bg-yellow-500 text-gray-900 px-3 py-1 rounded-full text-xs font-black">
                 SELECTED
@@ -123,40 +94,16 @@ const handleContinue = async () => {
                 : "border-gray-700 bg-gray-900/60 hover:border-yellow-500/50"
             }`}
           >
-            {/* Icon */}
             <div className="text-6xl mb-4">📚</div>
-
-            {/* Title */}
-            <h2 className="text-2xl font-black text-white mb-3">
-              Reader
-            </h2>
-
-            {/* Description */}
-            <p className="text-gray-400 mb-6">
-              Discover and read amazing comics
-            </p>
-
-            {/* Features */}
+            <h2 className="text-2xl font-black text-white mb-3">Reader</h2>
+            <p className="text-gray-400 mb-6">Discover and read amazing comics</p>
             <ul className="space-y-2">
-              <li className="flex items-center gap-2 text-yellow-400 text-sm">
-                <span>✓</span>
-                <span>Browse comic library</span>
-              </li>
-              <li className="flex items-center gap-2 text-yellow-400 text-sm">
-                <span>✓</span>
-                <span>Track reading progress</span>
-              </li>
-              <li className="flex items-center gap-2 text-yellow-400 text-sm">
-                <span>✓</span>
-                <span>Bookmark favorites</span>
-              </li>
-              <li className="flex items-center gap-2 text-yellow-400 text-sm">
-                <span>✓</span>
-                <span>Personalized recommendations</span>
-              </li>
+              {["Browse comic library", "Track reading progress", "Bookmark favorites", "Personalized recommendations"].map((f) => (
+                <li key={f} className="flex items-center gap-2 text-yellow-400 text-sm">
+                  <span>✓</span><span>{f}</span>
+                </li>
+              ))}
             </ul>
-
-            {/* Selected Badge */}
             {selected === "reader" && (
               <div className="absolute top-4 right-4 bg-yellow-500 text-gray-900 px-3 py-1 rounded-full text-xs font-black">
                 SELECTED

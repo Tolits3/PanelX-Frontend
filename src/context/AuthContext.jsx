@@ -7,9 +7,9 @@ import {
   onAuthStateChanged
 } from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import API_URL from "../config"; // adjust path based on file location
+import API_URL from "../config";
 
-fetch(`${API_URL}/api/series/all`)
+// ← REMOVED the stray fetch(`${API_URL}/api/series/all`) that was here!
 
 const AuthContext = createContext();
 
@@ -46,38 +46,36 @@ export function AuthProvider({ children }) {
   };
 
   // Create user profile in backend
-const createUserProfile = async (uid, email, role) => {
-  try {
-    const response = await fetch(`${API_URL}/api/users/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        uid,
-        email,
-        username: email.split("@")[0],  // ← ADD THIS
-        role,
-        avatar_url: "",                  // ← ADD THIS
-        bio: ""                          // ← ADD THIS
-        // ← REMOVE created_at
-      }),
-    });
+  const createUserProfile = async (uid, email, role) => {
+    try {
+      const response = await fetch(`${API_URL}/api/users/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uid,
+          email,
+          username: email.split("@")[0],
+          role,
+          avatar_url: "",
+          bio: ""
+        }),
+      });
 
-    const data = await response.json();
-    console.log("Profile created:", data);
-    return data;
+      const data = await response.json();
+      console.log("✅ Profile created:", data);
+      return data;
 
-  } catch (error) {
-    console.error("Error creating profile:", error);
-    throw error;
-  }
-};
+    } catch (error) {
+      console.error("Error creating profile:", error);
+      throw error;
+    }
+  };
 
-  // Sign up - FIXED: ensure email and password are strings
+  // Sign up
   const signup = async (email, password) => {
     try {
-      // Ensure inputs are strings
       const emailStr = String(email).trim();
       const passwordStr = String(password).trim();
       
@@ -93,14 +91,13 @@ const createUserProfile = async (uid, email, role) => {
     }
   };
 
-  // Login - FIXED: ensure email and password are strings
+  // Login
   const login = async (email, password) => {
     try {
-      // Ensure inputs are strings
       const emailStr = String(email).trim();
       const passwordStr = String(password).trim();
       
-      console.log("Login attempt:", { email: emailStr, passwordType: typeof passwordStr });
+      console.log("Login attempt:", { email: emailStr });
       
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -126,12 +123,12 @@ const createUserProfile = async (uid, email, role) => {
     }
   };
 
-  // Update profile
+  // Update profile - FIXED: was using localhost, now uses API_URL
   const updateProfile = async (updates) => {
     if (!user) return null;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/users/${user.uid}`, {
+      const response = await fetch(`${API_URL}/api/users/${user.uid}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +149,7 @@ const createUserProfile = async (uid, email, role) => {
     }
   };
 
-  // Upload avatar
+  // Upload avatar - FIXED: was using localhost, now uses API_URL
   const uploadAvatar = async (file) => {
     if (!user) return null;
 
@@ -160,7 +157,7 @@ const createUserProfile = async (uid, email, role) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch(`http://localhost:8000/api/users/${user.uid}/avatar`, {
+      const response = await fetch(`${API_URL}/api/users/${user.uid}/avatar`, {
         method: "POST",
         body: formData,
       });
